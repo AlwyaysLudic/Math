@@ -1,131 +1,203 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Outils numériques</title>
-  <style>
-    :root{font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif;--primary:#0ea5a4;--bg:#f6f8fb;--card:#ffffff;--text:#0f172a;--border:#e2e8f0;--output-bg:#fefefe;}
-    body{margin:0;background:var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center;min-height:100vh;}
-    .card{width:min(800px,95%);background:var(--card);border-radius:16px;box-shadow:0 10px 40px rgba(15,23,42,0.1);padding:30px;transition:0.3s all;}
-    h1{margin:0 0 16px;font-size:26px;text-align:center;color:var(--primary);}
-    nav{display:flex;gap:12px;justify-content:center;margin-bottom:24px;}
-    nav button{padding:10px 18px;border-radius:12px;border:none;background:var(--primary);color:white;font-weight:600;cursor:pointer;transition:0.2s all;}
-    nav button:hover{background:#06b0af;}
-    input[type=number], input[type=text]{padding:10px 14px;border-radius:10px;border:1px solid var(--border);min-width:160px;margin-right:8px;outline:none;transition:0.2s border-color;}
-    input:focus{border-color:var(--primary);}
-    section{display:none;margin-top:12px;animation:fadeIn 0.3s;}
-    .active{display:block;}
-    .output{margin-top:16px;border-radius:10px;border:1px solid var(--border);padding:14px;min-height:140px;max-height:400px;overflow:auto;background:var(--output-bg);box-shadow:inset 0 2px 6px rgba(0,0,0,0.03);}
-    .output div{margin-bottom:4px;}
-    .small{font-size:13px;color:#64748b;}
-    button.action{background:var(--primary);color:white;border:none;border-radius:10px;padding:10px 16px;cursor:pointer;font-weight:500;transition:0.2s all;}
-    button.action:hover{background:#06b0af;}
-    @keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Digital Tools</title>
+<style>
+:root{
+  --primary:#0ea5a4;
+  --bg:#f6f8fb;
+  --card:#ffffff;
+  --text:#0f172a;
+  --border:#e2e8f0;
+  --output-bg:#fefefe;
+  font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+body.dark{
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#f1f5f9;
+  --border:#334155;
+  --output-bg:#1e293b;
+}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  display:flex;align-items:center;justify-content:center;min-height:100vh;
+}
+.card{
+  width:min(800px,95%);background:var(--card);border-radius:16px;
+  box-shadow:0 10px 40px rgba(15,23,42,0.1);padding:30px;
+}
+h1{text-align:center;color:var(--primary);margin-top:0;}
+nav{display:flex;gap:12px;justify-content:center;margin-bottom:24px;}
+button{
+  cursor:pointer;border:none;border-radius:10px;
+  padding:10px 18px;font-weight:600;
+}
+nav button{background:var(--primary);color:white;}
+nav button:hover{background:#06b0af;}
+.action{background:var(--primary);color:white;font-weight:500;}
+input{padding:10px 14px;border-radius:10px;border:1px solid var(--border);}
+section{display:none;margin-top:12px;}
+.active{display:block;}
+.output{
+  margin-top:16px;border-radius:10px;border:1px solid var(--border);
+  padding:14px;min-height:140px;overflow:auto;background:var(--output-bg);
+}
+.topbar{
+  display:flex;justify-content:space-between;margin-bottom:20px;
+}
+select, .toggle{
+  padding:8px 14px;border-radius:10px;border:1px solid var(--border);
+  background:var(--card);color:var(--text);
+}
+.toggle{background:var(--primary);color:white;}
+</style>
 </head>
+
 <body>
-  <main class="card">
-    <h1>Outils numériques</h1>
-    <nav>
-      <button onclick="show('prime')">Nombres premiers</button>
-      <button onclick="show('decomp')">Décomposition</button>
-      <button onclick="show('solver')">Résolveur de problème</button>
-    </nav>
+<main class="card">
 
-    <section id="prime">
-      <h2>Nombres premiers</h2>
-      <p>Choisis une limite puis génère la liste des nombres premiers inférieurs ou égaux à cette limite.</p>
-      <input id="primeLimit" type="number" min="2" value="100">
-      <button class="action" onclick="generatePrimes()">Calculer</button>
-      <div class="output" id="primeOutput"></div>
-    </section>
+  <div class="topbar">
+    <select id="langSelect" onchange="setLang(this.value)">
+      <option value="en">English</option>
+      <option value="fr">Français</option>
+      <option value="it">Italiano</option>
+      <option value="de">Deutsch</option>
+      <option value="es">Español</option>
+    </select>
+    <button class="toggle" onclick="toggleDarkMode()" id="darkBtn">Dark mode</button>
+  </div>
 
-    <section id="decomp">
-      <h2>Décomposition multiplicative</h2>
-      <p>Entre un nombre et affiche le nombre de décompositions ainsi que toutes les décompositions en produits d'entiers &gt; 1.</p>
-      <input id="decompNum" type="number" min="2" value="60">
-      <button class="action" onclick="calcDecomp()">Calculer</button>
-      <div class="output" id="decompOutput"></div>
-    </section>
+  <h1 id="title"></h1>
 
-    <section id="solver">
-      <h2>Résolveur de problème</h2>
-      <p>Entre un problème mathématique ou un problème de texte et clique sur Calculer pour obtenir la solution.</p>
-      <input id="problemInput" type="text" placeholder="Écris ton problème ici" style="width:60%; padding:10px; border-radius:10px; border:1px solid var(--border);">
-      <button class="action" onclick="solveProblem()">Calculer</button>
-      <div class="output" id="solverOutput"></div>
-    </section>
+  <nav>
+    <button onclick="show('prime')" id="navPrime"></button>
+    <button onclick="show('decomp')" id="navDecomp"></button>
+  </nav>
 
-  </main>
+  <section id="prime">
+    <h2 id="primeTitle"></h2>
+    <p id="primeText"></p>
+    <input id="primeLimit" type="number" min="2" value="100">
+    <button class="action" onclick="generatePrimes()" id="primeBtn"></button>
+    <div class="output" id="primeOutput"></div>
+  </section>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.12.0/math.min.js"></script>
-  <script>
-    function show(id){
-      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
-    show('prime');
+  <section id="decomp">
+    <h2 id="decompTitle"></h2>
+    <p id="decompText"></p>
+    <input id="decompNum" type="number" min="2" value="60">
+    <button class="action" onclick="calcDecomp()" id="decompBtn"></button>
+    <div class="output" id="decompOutput"></div>
+  </section>
 
-    function isPrime(n){if(n<2)return false;for(let i=2;i*i<=n;i++)if(n%i===0)return false;return true;}
-    function generatePrimes(){
-      const limit = Number(document.getElementById('primeLimit').value);
-      const out = document.getElementById('primeOutput');
-      if(limit<2){out.textContent='Limite invalide.'; return;}
-      const primes=[];
-      for(let i=2;i<=limit;i++)if(isPrime(i))primes.push(i);
-      out.textContent = primes.join(', ');
-    }
+</main>
 
-    function factorCombinations(n){
-      const results=[];
-      function helper(curr,start,target){
-        if(target===1){if(curr.length)results.push([...curr]); return;}
-        for(let i=start;i<=target;i++){if(target%i===0){curr.push(i);helper(curr,i,target/i);curr.pop();}}
-      }
-      helper([],2,n);
-      return results;
-    }
-    function calcDecomp(){
-      const n = Number(document.getElementById('decompNum').value);
-      const out = document.getElementById('decompOutput');
-      if(n<2){out.textContent='Nombre invalide.'; return;}
-      const combs = factorCombinations(n);
-      if(!combs.length){out.textContent='Nombre premier — aucune décomposition.'; return;}
-      out.innerHTML = `Nombre de décompositions possibles : ${combs.length}<br>` + combs.map(c=>c.join(' × ')).join('<br>');
-    }
+<script>
+// Dark mode
+function toggleDarkMode(){
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  localStorage.setItem('dark', isDark ? '1' : '0');
+  document.getElementById('darkBtn').textContent = translations[currentLang].dark + (isDark ? " OFF" : " ON");
+}
+if(localStorage.getItem('dark') === '1') document.body.classList.add('dark');
 
-    function solveProblem(){
-      const input = document.getElementById('problemInput').value.trim();
-      const out = document.getElementById('solverOutput');
-      try {
-        let expr = input;
-        const funcMatch = expr.match(/^\s*s\(t\)\s*=\s*(.+)$/i);
-        if(funcMatch){
-          expr = funcMatch[1];
-        }
-        // Extraire les coefficients d'un polynôme t^3-6*t^2+9*t+2
-        const coeffs = expr.match(/([+-]?\d*)\*?t(\^\d+)?|([+-]?\d+)/g);
-        if(coeffs){
-          const poly = [0,0,0,0]; // supporte polynôme jusqu'au degré 3
-          coeffs.forEach(c => {
-            let match = c.match(/([+-]?\d*)\*?t\^(\d+)/);
-            if(match){ poly[Number(match[2])] = Number(match[1] || 1); return;}
-            match = c.match(/([+-]?\d*)\*?t/);
-            if(match){ poly[1] = Number(match[1] || 1); return;}
-            match = c.match(/([+-]?\d+)/);
-            if(match){ poly[0] = Number(match[1]); return;}
-          });
-          const roots = math.roots(poly.reverse()); // math.roots attend coefficients du plus haut degré
-          out.textContent = `Solutions pour t : ${roots}`;
-        } else {
-          const result = math.evaluate(expr);
-          out.textContent = `Résultat : ${result}`;
-        }
-      } catch(e){
-        out.textContent = 'Impossible de résoudre le problème. Vérifie la syntaxe ou utilise un polynôme valide.';
-      }
-    }
-  </script>
+// Translations
+const translations = {
+  en:{title:"Digital Tools",navPrime:"Prime Numbers",navDecomp:"Factorization",
+      primeTitle:"Prime Numbers",primeText:"Choose a limit to generate prime numbers.",
+      primeBtn:"Calculate",invalidLimit:"Invalid limit.",
+      decompTitle:"Multiplicative Decomposition",decompText:"Enter a number to list all factorizations.",
+      decompBtn:"Calculate",invalidNum:"Invalid number.",
+      noDecomp:"Prime number — no decomposition possible.",
+      count:"Number of possible factorizations:",dark:"Dark mode"},
+  fr:{title:"Outils numériques",navPrime:"Nombres premiers",navDecomp:"Décomposition",
+      primeTitle:"Nombres premiers",primeText:"Choisissez une limite pour générer des nombres premiers.",
+      primeBtn:"Calculer",invalidLimit:"Limite invalide.",
+      decompTitle:"Décomposition multiplicative",decompText:"Entrez un nombre pour afficher ses décompositions.",
+      decompBtn:"Calculer",invalidNum:"Nombre invalide.",
+      noDecomp:"Nombre premier — aucune décomposition.",
+      count:"Nombre de décompositions possibles :",dark:"Mode sombre"},
+  it:{title:"Strumenti digitali",navPrime:"Numeri primi",navDecomp:"Scomposizione",
+      primeTitle:"Numeri primi",primeText:"Scegli un limite per generare numeri primi.",
+      primeBtn:"Calcola",invalidLimit:"Limite non valido.",
+      decompTitle:"Scomposizione moltiplicativa",decompText:"Inserisci un numero per vedere le scomposizioni.",
+      decompBtn:"Calcola",invalidNum:"Numero non valido.",
+      noDecomp:"Numero primo — nessuna scomposizione.",
+      count:"Numero di scomposizioni possibili:",dark:"Modalità scura"},
+  de:{title:"Digitale Werkzeuge",navPrime:"Primzahlen",navDecomp:"Faktorisierung",
+      primeTitle:"Primzahlen",primeText:"Wähle ein Limit, um Primzahlen zu erzeugen.",
+      primeBtn:"Berechnen",invalidLimit:"Ungültige Grenze.",
+      decompTitle:"Multiplikative Faktorisierung",decompText:"Zahl eingeben, um Faktorisierungen anzuzeigen.",
+      decompBtn:"Berechnen",invalidNum:"Ungültige Zahl.",
+      noDecomp:"Primzahl — keine Faktorisierung möglich.",
+      count:"Anzahl möglicher Faktorisierungen:",dark:"Dunkelmodus"},
+  es:{title:"Herramientas digitales",navPrime:"Números primos",navDecomp:"Factorización",
+      primeTitle:"Números primos",primeText:"Elige un límite para generar números primos.",
+      primeBtn:"Calcular",invalidLimit:"Límite inválido.",
+      decompTitle:"Descomposición multiplicativa",decompText:"Introduce un número para ver sus descomposiciones.",
+      decompBtn:"Calcular",invalidNum:"Número inválido.",
+      noDecomp:"Número primo — no hay descomposición posible.",
+      count:"Número de factorizaciones posibles:",dark:"Modo oscuro"}
+};
+
+let currentLang = localStorage.getItem('lang') || 'en';
+setLang(currentLang);
+
+// Apply language
+function setLang(l){
+  currentLang = l;
+  localStorage.setItem('lang', l);
+  const t = translations[l];
+  document.getElementById('title').textContent = t.title;
+  document.getElementById('navPrime').textContent = t.navPrime;
+  document.getElementById('navDecomp').textContent = t.navDecomp;
+  document.getElementById('primeTitle').textContent = t.primeTitle;
+  document.getElementById('primeText').textContent = t.primeText;
+  document.getElementById('primeBtn').textContent = t.primeBtn;
+  document.getElementById('decompTitle').textContent = t.decompTitle;
+  document.getElementById('decompText').textContent = t.decompText;
+  document.getElementById('decompBtn').textContent = t.decompBtn;
+  document.getElementById('darkBtn').textContent = t.dark + " ON";
+}
+
+// UI logic
+function show(id){
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+show('prime');
+
+// Prime number generator
+function isPrime(n){if(n<2)return false;for(let i=2;i*i<=n;i++)if(n%i===0)return false;return true;}
+function generatePrimes(){
+  const limit = Number(primeLimit.value);
+  if(limit<2){primeOutput.textContent = translations[currentLang].invalidLimit;return;}
+  const primes=[];
+  for(let i=2;i<=limit;i++)if(isPrime(i))primes.push(i);
+  primeOutput.textContent = primes.join(', ');
+}
+
+// Decomposition
+function calcDecomp(){
+  const n = Number(decompNum.value);
+  const t = translations[currentLang];
+  if(n<2){decompOutput.textContent = t.invalidNum;return;}
+  const combs = factorCombinations(n);
+  if(!combs.length){decompOutput.textContent=t.noDecomp;return;}
+  decompOutput.innerHTML = `${t.count} ${combs.length}<br>` + combs.map(c=>c.join(' × ')).join('<br>');
+}
+function factorCombinations(n){
+  const res=[];
+  function helper(curr,start,target){
+    if(target===1){if(curr.length)res.push([...curr]);return;}
+    for(let i=start;i<=target;i++){if(target%i===0){curr.push(i);helper(curr,i,target/i);curr.pop();}}
+  }
+  helper([],2,n);return res;
+}
+</script>
 </body>
 </html>
