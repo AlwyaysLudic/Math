@@ -1,202 +1,206 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Digital Tools</title>
 <style>
-:root{
-  --primary:#0ea5a4;
-  --bg:#f6f8fb;
-  --card:#ffffff;
-  --text:#0f172a;
-  --border:#e2e8f0;
-  --output-bg:#fefefe;
-  font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
-}
-body.dark{
-  --bg:#0f172a;
-  --card:#1e293b;
-  --text:#f1f5f9;
-  --border:#334155;
-  --output-bg:#1e293b;
-}
-body{
-  margin:0;background:var(--bg);color:var(--text);
-  display:flex;align-items:center;justify-content:center;min-height:100vh;
-}
-.card{
-  width:min(800px,95%);background:var(--card);border-radius:16px;
-  box-shadow:0 10px 40px rgba(15,23,42,0.1);padding:30px;
-}
-h1{text-align:center;color:var(--primary);margin-top:0;}
-nav{display:flex;gap:12px;justify-content:center;margin-bottom:24px;}
-button{
-  cursor:pointer;border:none;border-radius:10px;
-  padding:10px 18px;font-weight:600;
-}
-nav button{background:var(--primary);color:white;}
-nav button:hover{background:#06b0af;}
-.action{background:var(--primary);color:white;font-weight:500;}
-input{padding:10px 14px;border-radius:10px;border:1px solid var(--border);}
-section{display:none;margin-top:12px;}
-.active{display:block;}
-.output{
-  margin-top:16px;border-radius:10px;border:1px solid var(--border);
-  padding:14px;min-height:140px;overflow:auto;background:var(--output-bg);
-}
-.topbar{
-  display:flex;justify-content:space-between;margin-bottom:20px;
-}
-select, .toggle{
-  padding:8px 14px;border-radius:10px;border:1px solid var(--border);
-  background:var(--card);color:var(--text);
-}
-.toggle{background:var(--primary);color:white;}
+  :root{
+    --primary:#0ea5a4;
+    --bg:#f6f8fb;
+    --card:#ffffff;
+    --text:#0f172a;
+    --border:#e2e8f0;
+    --muted:#64748b;
+    --output-bg:#fefefe;
+    --accent:#06b0af;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  body.dark{
+    --bg:#0f172a;
+    --card:#1e293b;
+    --text:#f1f5f9;
+    --border:#334155;
+    --muted:#94a3b8;
+    --output-bg:#1e293b;
+    --primary:#38bdf8;
+    --accent:#0ea5a4;
+  }
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--text);}
+  .wrap{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px;
+    box-sizing:border-box;
+  }
+  .card{
+    width:90%;               /* fill most of the width */
+    max-width:1400px;        /* optional maximum width */
+    min-height:80vh;         /* fill most of the viewport height */
+    background:var(--card);
+    border-radius:14px;
+    box-shadow:0 10px 40px rgba(15,23,42,0.08);
+    padding:28px;
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+  }
+
+  .topbar{display:flex;justify-content:flex-end;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+  select, button, input[type=number]{font:inherit;border-radius:10px;border:1px solid var(--border);padding:8px 12px;background:var(--card);color:var(--text);outline:none;}
+  button{cursor:pointer;}
+  .primary{background:var(--primary);color:#fff;border:none;}
+  .primary:hover{background:var(--accent);}
+  h1{text-align:center;margin:6px 0 14px;font-size:28px;color:var(--primary);}
+  nav{display:flex;gap:10px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;}
+  nav button{padding:10px 14px;border-radius:12px;border:none;background:var(--primary);color:#fff;font-weight:600;cursor:pointer;}
+  nav button:hover{background:var(--accent);}
+  .box{border-radius:12px;padding:16px;border:1px solid var(--border);background:var(--output-bg);box-shadow:inset 0 2px 6px rgba(0,0,0,0.02);}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px;}
+  .output{margin-top:12px;border-radius:10px;border:1px solid var(--border);padding:12px;min-height:180px;max-height:600px;overflow:auto;background:var(--output-bg);}
+  .small{font-size:13px;color:var(--muted);}
+  section{margin-top:8px;}
 </style>
 </head>
-
 <body>
-<main class="card">
-
+<div class="wrap">
+<main class="card" role="main">
   <div class="topbar">
-    <select id="langSelect" onchange="setLang(this.value)">
+    <select id="langSelect" aria-label="Language selector">
       <option value="en">English</option>
       <option value="fr">Français</option>
       <option value="it">Italiano</option>
       <option value="de">Deutsch</option>
       <option value="es">Español</option>
     </select>
-    <button class="toggle" onclick="toggleDarkMode()" id="darkBtn">Dark mode</button>
+    <button id="darkBtn" class="toggle" onclick="toggleDarkMode()">Dark</button>
   </div>
 
-  <h1 id="title"></h1>
+  <h1 id="title">Digital Tools</h1>
 
   <nav>
-    <button onclick="show('prime')" id="navPrime"></button>
-    <button onclick="show('decomp')" id="navDecomp"></button>
+    <button onclick="show('prime')" id="navPrime">Prime Numbers</button>
+    <button onclick="show('decomp')" id="navDecomp">Factorization</button>
   </nav>
 
-  <section id="prime">
-    <h2 id="primeTitle"></h2>
-    <p id="primeText"></p>
-    <input id="primeLimit" type="number" min="2" value="100">
-    <button class="action" onclick="generatePrimes()" id="primeBtn"></button>
-    <div class="output" id="primeOutput"></div>
+  <section id="prime" class="active-section">
+    <div class="box">
+      <h3 id="primeTitle">Prime Numbers</h3>
+      <p id="primeText" class="small">Choose a limit to generate prime numbers less than or equal to that limit.</p>
+      <div class="row">
+        <input id="primeLimit" type="number" min="2" value="100" aria-label="prime limit">
+        <button class="primary" onclick="generatePrimes()" id="primeBtn">Calculate</button>
+      </div>
+      <div class="output" id="primeOutput" aria-live="polite"></div>
+    </div>
   </section>
 
   <section id="decomp">
-    <h2 id="decompTitle"></h2>
-    <p id="decompText"></p>
-    <input id="decompNum" type="number" min="2" value="60">
-    <button class="action" onclick="calcDecomp()" id="decompBtn"></button>
-    <div class="output" id="decompOutput"></div>
+    <div class="box">
+      <h3 id="decompTitle">Multiplicative Decomposition</h3>
+      <p id="decompText" class="small">Enter a number to list all factorizations.</p>
+      <div class="row">
+        <input id="decompNum" type="number" min="2" value="60" aria-label="number to decompose">
+        <button class="primary" onclick="calcDecomp()" id="decompBtn">Calculate</button>
+      </div>
+      <div class="output" id="decompOutputArea">
+        <div id="decompOutput" aria-live="polite"></div>
+      </div>
+    </div>
   </section>
-
 </main>
+</div>
 
 <script>
-// Dark mode
-function toggleDarkMode(){
-  document.body.classList.toggle('dark');
-  const isDark = document.body.classList.contains('dark');
-  localStorage.setItem('dark', isDark ? '1' : '0');
-  document.getElementById('darkBtn').textContent = translations[currentLang].dark + (isDark ? " OFF" : " ON");
-}
-if(localStorage.getItem('dark') === '1') document.body.classList.add('dark');
-
-// Translations
 const translations = {
   en:{title:"Digital Tools",navPrime:"Prime Numbers",navDecomp:"Factorization",
-      primeTitle:"Prime Numbers",primeText:"Choose a limit to generate prime numbers.",
-      primeBtn:"Calculate",invalidLimit:"Invalid limit.",
-      decompTitle:"Multiplicative Decomposition",decompText:"Enter a number to list all factorizations.",
-      decompBtn:"Calculate",invalidNum:"Invalid number.",
-      noDecomp:"Prime number — no decomposition possible.",
-      count:"Number of possible factorizations:",dark:"Dark mode"},
+      primeTitle:"Prime Numbers",primeText:"Choose a limit to generate prime numbers less than or equal to that limit.",primeBtn:"Calculate",
+      decompTitle:"Multiplicative Decomposition",decompText:"Enter a number to list all factorizations.",decompBtn:"Calculate",
+      invalidLimit:"Invalid limit.",invalidNum:"Invalid number.",noDecomp:"Prime number — no decomposition possible.",
+      count:"Number of possible factorizations:",darkOn:"Dark ON",darkOff:"Dark OFF"},
   fr:{title:"Outils numériques",navPrime:"Nombres premiers",navDecomp:"Décomposition",
-      primeTitle:"Nombres premiers",primeText:"Choisissez une limite pour générer des nombres premiers.",
-      primeBtn:"Calculer",invalidLimit:"Limite invalide.",
-      decompTitle:"Décomposition multiplicative",decompText:"Entrez un nombre pour afficher ses décompositions.",
-      decompBtn:"Calculer",invalidNum:"Nombre invalide.",
-      noDecomp:"Nombre premier — aucune décomposition.",
-      count:"Nombre de décompositions possibles :",dark:"Mode sombre"},
+      primeTitle:"Nombres premiers",primeText:"Choisissez une limite pour générer des nombres premiers.",primeBtn:"Calculer",
+      decompTitle:"Décomposition multiplicative",decompText:"Entrez un nombre pour afficher toutes les décompositions.",decompBtn:"Calculer",
+      invalidLimit:"Limite invalide.",invalidNum:"Nombre invalide.",noDecomp:"Nombre premier — aucune décomposition.",count:"Nombre de décompositions possibles :",darkOn:"Sombre ON",darkOff:"Sombre OFF"},
   it:{title:"Strumenti digitali",navPrime:"Numeri primi",navDecomp:"Scomposizione",
-      primeTitle:"Numeri primi",primeText:"Scegli un limite per generare numeri primi.",
-      primeBtn:"Calcola",invalidLimit:"Limite non valido.",
-      decompTitle:"Scomposizione moltiplicativa",decompText:"Inserisci un numero per vedere le scomposizioni.",
-      decompBtn:"Calcola",invalidNum:"Numero non valido.",
-      noDecomp:"Numero primo — nessuna scomposizione.",
-      count:"Numero di scomposizioni possibili:",dark:"Modalità scura"},
+      primeTitle:"Numeri primi",primeText:"Scegli un limite per generare numeri primi.",primeBtn:"Calcola",
+      decompTitle:"Scomposizione moltiplicativa",decompText:"Inserisci un numero per vedere tutte le scomposizioni.",decompBtn:"Calcola",
+      invalidLimit:"Limite non valido.",invalidNum:"Numero non valido.",noDecomp:"Numero primo — nessuna scomposizione.",count:"Numero di scomposizioni possibili:",darkOn:"Scuro ON",darkOff:"Scuro OFF"},
   de:{title:"Digitale Werkzeuge",navPrime:"Primzahlen",navDecomp:"Faktorisierung",
-      primeTitle:"Primzahlen",primeText:"Wähle ein Limit, um Primzahlen zu erzeugen.",
-      primeBtn:"Berechnen",invalidLimit:"Ungültige Grenze.",
-      decompTitle:"Multiplikative Faktorisierung",decompText:"Zahl eingeben, um Faktorisierungen anzuzeigen.",
-      decompBtn:"Berechnen",invalidNum:"Ungültige Zahl.",
-      noDecomp:"Primzahl — keine Faktorisierung möglich.",
-      count:"Anzahl möglicher Faktorisierungen:",dark:"Dunkelmodus"},
+      primeTitle:"Primzahlen",primeText:"Wähle ein Limit, um Primzahlen zu erzeugen.",primeBtn:"Berechnen",
+      decompTitle:"Multiplikative Faktorisierung",decompText:"Gib eine Zahl ein, um alle Faktorisierungen zu sehen.",decompBtn:"Berechnen",
+      invalidLimit:"Ungültige Grenze.",invalidNum:"Ungültige Zahl.",noDecomp:"Primzahl — keine Faktorisierung möglich.",count:"Anzahl möglicher Faktorisierungen:",darkOn:"Dunkel ON",darkOff:"Dunkel OFF"},
   es:{title:"Herramientas digitales",navPrime:"Números primos",navDecomp:"Factorización",
-      primeTitle:"Números primos",primeText:"Elige un límite para generar números primos.",
-      primeBtn:"Calcular",invalidLimit:"Límite inválido.",
-      decompTitle:"Descomposición multiplicativa",decompText:"Introduce un número para ver sus descomposiciones.",
-      decompBtn:"Calcular",invalidNum:"Número inválido.",
-      noDecomp:"Número primo — no hay descomposición posible.",
-      count:"Número de factorizaciones posibles:",dark:"Modo oscuro"}
+      primeTitle:"Números primos",primeText:"Elige un límite para generar números primos.",primeBtn:"Calcular",
+      decompTitle:"Descomposición multiplicativa",decompText:"Introduce un número para ver todas las descomposiciones.",decompBtn:"Calcular",
+      invalidLimit:"Límite inválido.",invalidNum:"Número inválido.",noDecomp:"Número primo — no hay descomposición posible.",count:"Número de factorizaciones posibles:",darkOn:"Oscuro ON",darkOff:"Oscuro OFF"}
 };
 
 let currentLang = localStorage.getItem('lang') || 'en';
-setLang(currentLang);
+let isDark = localStorage.getItem('dark')==='1';
+const langSelect = document.getElementById('langSelect');
+langSelect.value=currentLang;
+if(isDark) document.body.classList.add('dark');
 
-// Apply language
-function setLang(l){
-  currentLang = l;
-  localStorage.setItem('lang', l);
-  const t = translations[l];
-  document.getElementById('title').textContent = t.title;
-  document.getElementById('navPrime').textContent = t.navPrime;
-  document.getElementById('navDecomp').textContent = t.navDecomp;
-  document.getElementById('primeTitle').textContent = t.primeTitle;
-  document.getElementById('primeText').textContent = t.primeText;
-  document.getElementById('primeBtn').textContent = t.primeBtn;
-  document.getElementById('decompTitle').textContent = t.decompTitle;
-  document.getElementById('decompText').textContent = t.decompText;
-  document.getElementById('decompBtn').textContent = t.decompBtn;
-  document.getElementById('darkBtn').textContent = t.dark + " ON";
+function applyTranslations(){
+  const t = translations[currentLang];
+  document.getElementById('title').textContent=t.title;
+  document.getElementById('navPrime').textContent=t.navPrime;
+  document.getElementById('navDecomp').textContent=t.navDecomp;
+  document.getElementById('primeTitle').textContent=t.primeTitle;
+  document.getElementById('primeText').textContent=t.primeText;
+  document.getElementById('primeBtn').textContent=t.primeBtn;
+  document.getElementById('decompTitle').textContent=t.decompTitle;
+  document.getElementById('decompText').textContent=t.decompText;
+  document.getElementById('decompBtn').textContent=t.decompBtn;
+  document.getElementById('darkBtn').textContent=isDark?t.darkOn:t.darkOff;
 }
-
-// UI logic
+applyTranslations();
+langSelect.addEventListener('change', (e)=>{
+  currentLang=e.target.value;
+  localStorage.setItem('lang',currentLang);
+  applyTranslations();
+});
+function toggleDarkMode(){
+  isDark=document.body.classList.toggle('dark');
+  localStorage.setItem('dark',isDark?'1':'0');
+  applyTranslations();
+}
 function show(id){
-  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('section').forEach(s=>s.style.display='none');
+  document.getElementById(id).style.display='block';
 }
 show('prime');
 
-// Prime number generator
 function isPrime(n){if(n<2)return false;for(let i=2;i*i<=n;i++)if(n%i===0)return false;return true;}
 function generatePrimes(){
-  const limit = Number(primeLimit.value);
-  if(limit<2){primeOutput.textContent = translations[currentLang].invalidLimit;return;}
-  const primes=[];
-  for(let i=2;i<=limit;i++)if(isPrime(i))primes.push(i);
-  primeOutput.textContent = primes.join(', ');
-}
-
-// Decomposition
-function calcDecomp(){
-  const n = Number(decompNum.value);
-  const t = translations[currentLang];
-  if(n<2){decompOutput.textContent = t.invalidNum;return;}
-  const combs = factorCombinations(n);
-  if(!combs.length){decompOutput.textContent=t.noDecomp;return;}
-  decompOutput.innerHTML = `${t.count} ${combs.length}<br>` + combs.map(c=>c.join(' × ')).join('<br>');
+  const limit=Number(document.getElementById('primeLimit').value);
+  const out=document.getElementById('primeOutput');
+  const t=translations[currentLang];
+  if(!Number.isFinite(limit)||limit<2){out.textContent=t.invalidLimit;return;}
+  const primes=[];for(let i=2;i<=limit;i++)if(isPrime(i))primes.push(i);
+  out.textContent=primes.join(', ');
 }
 function factorCombinations(n){
-  const res=[];
+  const results=[];
   function helper(curr,start,target){
-    if(target===1){if(curr.length)res.push([...curr]);return;}
-    for(let i=start;i<=target;i++){if(target%i===0){curr.push(i);helper(curr,i,target/i);curr.pop();}}
+    if(target===1){if(curr.length)results.push([...curr]);return;}
+    for(let i=start;i<=target;i++)if(target%i===0){curr.push(i);helper(curr,i,target/i);curr.pop();}
   }
-  helper([],2,n);return res;
+  helper([],2,n);return results;
+}
+function calcDecomp(){
+  const n=Number(document.getElementById('decompNum').value);
+  const t=translations[currentLang];
+  const out=document.getElementById('decompOutput');
+  out.innerHTML='';
+  if(!Number.isFinite(n)||n<2){out.textContent=t.invalidNum;return;}
+  const combs=factorCombinations(n);
+  if(!combs.length){out.textContent=t.noDecomp;return;}
+  out.innerHTML=`<div class="small">${t.count} ${combs.length}</div><div style="margin-top:8px;">${combs.map(c=>c.join(' × ')).join('<br>')}</div>`;
 }
 </script>
 </body>
