@@ -84,6 +84,7 @@
     <button onclick="show('prime')" id="navPrime">Prime Numbers</button>
     <button onclick="show('decomp')" id="navDecomp">Factorization</button>
     <button onclick="show('math')" id="navMath">Math Functions</button>
+    <button onclick="show('fraction')" id="navFraction">Fractions</button>
   </nav>
 
   <section id="prime" class="active-section">
@@ -125,6 +126,39 @@
       <div class="output" id="mathOutput" aria-live="polite"></div>
     </div>
   </section>
+  <section id="fraction">
+  <div class="box">
+    <h3>Calculateur de fractions</h3>
+    <p class="small">Addition, soustraction, multiplication, division et simplification automatique.</p>
+
+    <div class="row">
+      <div class="fraction-box">
+        <input id="num1" type="number" placeholder="numérateur">
+        <div class="fraction-bar"></div>
+        <input id="den1" type="number" placeholder="dénominateur">
+      </div>
+
+      <select id="operator">
+        <option value="+">+</option>
+        <option value="-">−</option>
+        <option value="*">×</option>
+        <option value="/">÷</option>
+      </select>
+
+      <div class="fraction-box">
+        <input id="num2" type="number" placeholder="numérateur">
+        <div class="fraction-bar"></div>
+        <input id="den2" type="number" placeholder="dénominateur">
+      </div>
+    </div>
+
+    <button class="primary" onclick="calcFraction()">Calculer</button>
+    <div id="fractionError" class="small" style="color:#f87171;"></div>
+
+    <div class="output" id="fractionResult" style="display:none;"></div>
+  </div>
+</section>
+
 </main>
 </div>
 
@@ -292,6 +326,73 @@ function updateMathInputs() {
 updateMathInputs();
 // Call whenever operation changes
 mathSelect.addEventListener('change', updateMathInputs);
+  <script>
+function gcd(a,b){
+  a=Math.abs(a); b=Math.abs(b);
+  while(b!==0){ let t=b; b=a%b; a=t; }
+  return a;
+}
+
+function simplify(num,den){
+  if(den<0){ den=-den; num=-num; }
+  const g=gcd(num,den);
+  return {num:num/g, den:den/g};
+}
+
+function fractionToMixed(num,den){
+  const sign=num<0?-1:1;
+  num=Math.abs(num);
+  const whole=Math.floor(num/den);
+  const rest=num%den;
+
+  if(whole===0) return (sign<0?"-":"")+rest+"/"+den;
+  if(rest===0) return (sign*whole)+"";
+  return (sign<0?"-":"")+whole+" "+rest+"/"+den;
+}
+
+function calcFraction(){
+  const n1=parseInt(num1.value), d1=parseInt(den1.value);
+  const n2=parseInt(num2.value), d2=parseInt(den2.value);
+  const op=operator.value;
+
+  const err=fractionError;
+  const box=fractionResult;
+
+  err.textContent="";
+  box.style.display="none";
+
+  if(isNaN(n1)||isNaN(d1)||isNaN(n2)||isNaN(d2)){
+    err.textContent="Remplis tous les champs.";
+    return;
+  }
+  if(d1===0||d2===0){
+    err.textContent="Un dénominateur ne peut pas être zéro.";
+    return;
+  }
+
+  let rn, rd;
+
+  if(op==="+"){ rn=n1*d2+n2*d1; rd=d1*d2; }
+  else if(op==="−" || op==="-"){ rn=n1*d2-n2*d1; rd=d1*d2; }
+  else if(op==="*"){ rn=n1*n2; rd=d1*d2; }
+  else if(op==="/"){
+    if(n2===0){ err.textContent="Division par zéro impossible."; return; }
+    rn=n1*d2; rd=d1*n2;
+  }
+
+  const s=simplify(rn,rd);
+  const mixed=fractionToMixed(s.num,s.den);
+  const dec=(s.num/s.den).toFixed(6);
+
+  box.innerHTML=
+    `<b>Fraction simplifiée :</b> ${s.num}/${s.den}<br>`+
+    `<b>Forme mixte :</b> ${mixed}<br>`+
+    `<b>Décimal approx :</b> ${dec}`;
+
+  box.style.display="block";
+}
+
+
 </script>
 </body>
 </html>
