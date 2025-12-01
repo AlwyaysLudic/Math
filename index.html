@@ -36,9 +36,9 @@
     box-sizing:border-box;
   }
   .card{
-    width:90%;               /* fill most of the width */
-    max-width:1400px;        /* optional maximum width */
-    min-height:80vh;         /* fill most of the viewport height */
+    width:90%;
+    max-width:1400px;
+    min-height:80vh;
     background:var(--card);
     border-radius:14px;
     box-shadow:0 10px 40px rgba(15,23,42,0.08);
@@ -48,7 +48,6 @@
     flex-direction:column;
     justify-content:flex-start;
   }
-
   .topbar{display:flex;justify-content:flex-end;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
   select, button, input[type=number]{font:inherit;border-radius:10px;border:1px solid var(--border);padding:8px 12px;background:var(--card);color:var(--text);outline:none;}
   button{cursor:pointer;}
@@ -84,6 +83,7 @@
   <nav>
     <button onclick="show('prime')" id="navPrime">Prime Numbers</button>
     <button onclick="show('decomp')" id="navDecomp">Factorization</button>
+    <button onclick="show('math')" id="navMath">Math Functions</button>
   </nav>
 
   <section id="prime" class="active-section">
@@ -111,32 +111,66 @@
       </div>
     </div>
   </section>
+
+  <section id="math">
+    <div class="box">
+      <h3 id="mathTitle">Math Functions</h3>
+      <p id="mathText" class="small">Enter numbers to calculate various math operations.</p>
+      <div class="row">
+        <input id="mathInput1" type="number" placeholder="Number 1" aria-label="First number">
+        <input id="mathInput2" type="number" placeholder="Number 2" aria-label="Second number">
+        <select id="mathOperation" aria-label="Select operation"></select>
+        <button class="primary" onclick="calcMath()">Calculate</button>
+      </div>
+      <div class="output" id="mathOutput" aria-live="polite"></div>
+    </div>
+  </section>
 </main>
 </div>
 
 <script>
 const translations = {
-  en:{title:"Digital Tools",navPrime:"Prime Numbers",navDecomp:"Factorization",
-      primeTitle:"Prime Numbers",primeText:"Choose a limit to generate prime numbers less than or equal to that limit.",primeBtn:"Calculate",
-      decompTitle:"Multiplicative Decomposition",decompText:"Enter a number to list all factorizations.",decompBtn:"Calculate",
-      invalidLimit:"Invalid limit.",invalidNum:"Invalid number.",noDecomp:"Prime number — no decomposition possible.",
-      count:"Number of possible factorizations:",darkOn:"Dark ON",darkOff:"Dark OFF"},
-  fr:{title:"Outils numériques",navPrime:"Nombres premiers",navDecomp:"Décomposition",
-      primeTitle:"Nombres premiers",primeText:"Choisissez une limite pour générer des nombres premiers.",primeBtn:"Calculer",
-      decompTitle:"Décomposition multiplicative",decompText:"Entrez un nombre pour afficher toutes les décompositions.",decompBtn:"Calculer",
-      invalidLimit:"Limite invalide.",invalidNum:"Nombre invalide.",noDecomp:"Nombre premier — aucune décomposition.",count:"Nombre de décompositions possibles :",darkOn:"Sombre ON",darkOff:"Sombre OFF"},
-  it:{title:"Strumenti digitali",navPrime:"Numeri primi",navDecomp:"Scomposizione",
-      primeTitle:"Numeri primi",primeText:"Scegli un limite per generare numeri primi.",primeBtn:"Calcola",
-      decompTitle:"Scomposizione moltiplicativa",decompText:"Inserisci un numero per vedere tutte le scomposizioni.",decompBtn:"Calcola",
-      invalidLimit:"Limite non valido.",invalidNum:"Numero non valido.",noDecomp:"Numero primo — nessuna scomposizione.",count:"Numero di scomposizioni possibili:",darkOn:"Scuro ON",darkOff:"Scuro OFF"},
-  de:{title:"Digitale Werkzeuge",navPrime:"Primzahlen",navDecomp:"Faktorisierung",
-      primeTitle:"Primzahlen",primeText:"Wähle ein Limit, um Primzahlen zu erzeugen.",primeBtn:"Berechnen",
-      decompTitle:"Multiplikative Faktorisierung",decompText:"Gib eine Zahl ein, um alle Faktorisierungen zu sehen.",decompBtn:"Berechnen",
-      invalidLimit:"Ungültige Grenze.",invalidNum:"Ungültige Zahl.",noDecomp:"Primzahl — keine Faktorisierung möglich.",count:"Anzahl möglicher Faktorisierungen:",darkOn:"Dunkel ON",darkOff:"Dunkel OFF"},
-  es:{title:"Herramientas digitales",navPrime:"Números primos",navDecomp:"Factorización",
-      primeTitle:"Números primos",primeText:"Elige un límite para generar números primos.",primeBtn:"Calcular",
-      decompTitle:"Descomposición multiplicativa",decompText:"Introduce un número para ver todas las descomposiciones.",decompBtn:"Calcular",
-      invalidLimit:"Límite inválido.",invalidNum:"Número inválido.",noDecomp:"Número primo — no hay descomposición posible.",count:"Número de factorizaciones posibles:",darkOn:"Oscuro ON",darkOff:"Oscuro OFF"}
+  en:{
+    title:"Digital Tools", navPrime:"Prime Numbers", navDecomp:"Factorization", navMath:"Math Functions",
+    primeTitle:"Prime Numbers", primeText:"Choose a limit to generate prime numbers less than or equal to that limit.", primeBtn:"Calculate",
+    decompTitle:"Multiplicative Decomposition", decompText:"Enter a number to list all factorizations.", decompBtn:"Calculate",
+    mathTitle:"Math Functions", mathText:"Enter numbers to calculate various math operations.",
+    mathOps:{gcd:"GCD", lcm:"LCM", pow:"Power", mod:"Modulo", add:"Add", sub:"Subtract", sin:"Sin (deg)", cos:"Cos (deg)", tan:"Tan (deg)", factorial:"Factorial", combination:"Combination (nCr)", permutation:"Permutation (nPr)"},
+    invalidLimit:"Invalid limit.", invalidNum:"Invalid number.", noDecomp:"Prime number — no decomposition possible.",
+    count:"Number of possible factorizations:", darkOn:"Dark ON", darkOff:"Dark OFF"
+  },
+  fr:{
+    title:"Outils numériques", navPrime:"Nombres premiers", navDecomp:"Décomposition", navMath:"Fonctions Mathématiques",
+    primeTitle:"Nombres premiers", primeText:"Choisissez une limite pour générer des nombres premiers.", primeBtn:"Calculer",
+    decompTitle:"Décomposition multiplicative", decompText:"Entrez un nombre pour afficher toutes les décompositions.", decompBtn:"Calculer",
+    mathTitle:"Fonctions Mathématiques", mathText:"Entrez des nombres pour effectuer des calculs.",
+    mathOps:{gcd:"PGCD", lcm:"PPCM", pow:"Puissance", mod:"Modulo", add:"Addition", sub:"Soustraction", sin:"Sin (deg)", cos:"Cos (deg)", tan:"Tan (deg)", factorial:"Factorielle", combination:"Combinaison (nCr)", permutation:"Permutation (nPr)"},
+    invalidLimit:"Limite invalide.", invalidNum:"Nombre invalide.", noDecomp:"Nombre premier — aucune décomposition.", count:"Nombre de décompositions possibles :", darkOn:"Sombre ON", darkOff:"Sombre OFF"
+  },
+  it:{
+    title:"Strumenti digitali", navPrime:"Numeri primi", navDecomp:"Scomposizione", navMath:"Funzioni Matematiche",
+    primeTitle:"Numeri primi", primeText:"Scegli un limite per generare numeri primi.", primeBtn:"Calcola",
+    decompTitle:"Scomposizione moltiplicativa", decompText:"Inserisci un numero per vedere tutte le scomposizioni.", decompBtn:"Calcola",
+    mathTitle:"Funzioni Matematiche", mathText:"Inserisci numeri per eseguire calcoli.",
+    mathOps:{gcd:"MCD", lcm:"mcm", pow:"Potenza", mod:"Modulo", add:"Somma", sub:"Sottrazione", sin:"Sin (gradi)", cos:"Cos (gradi)", tan:"Tan (gradi)", factorial:"Fattoriale", combination:"Combinazione (nCr)", permutation:"Permutazione (nPr)"},
+    invalidLimit:"Limite non valido.", invalidNum:"Numero non valido.", noDecomp:"Numero primo — nessuna scomposizione.", count:"Numero di scomposizioni possibili:", darkOn:"Scuro ON", darkOff:"Scuro OFF"
+  },
+  de:{
+    title:"Digitale Werkzeuge", navPrime:"Primzahlen", navDecomp:"Faktorisierung", navMath:"Mathematische Funktionen",
+    primeTitle:"Primzahlen", primeText:"Wähle ein Limit, um Primzahlen zu erzeugen.", primeBtn:"Berechnen",
+    decompTitle:"Multiplikative Faktorisierung", decompText:"Gib eine Zahl ein, um alle Faktorisierungen zu sehen.", decompBtn:"Berechnen",
+    mathTitle:"Mathematische Funktionen", mathText:"Gib Zahlen ein, um Berechnungen durchzuführen.",
+    mathOps:{gcd:"ggT", lcm:"kgV", pow:"Potenz", mod:"Modulo", add:"Addieren", sub:"Subtrahieren", sin:"Sin (Grad)", cos:"Cos (Grad)", tan:"Tan (Grad)", factorial:"Fakultät", combination:"Kombination (nCr)", permutation:"Permutation (nPr)"},
+    invalidLimit:"Ungültige Grenze.", invalidNum:"Ungültige Zahl.", noDecomp:"Primzahl — keine Faktorisierung möglich.", count:"Anzahl möglicher Faktorisierungen:", darkOn:"Dunkel ON", darkOff:"Dunkel OFF"
+  },
+  es:{
+    title:"Herramientas digitales", navPrime:"Números primos", navDecomp:"Factorización", navMath:"Funciones Matemáticas",
+    primeTitle:"Números primos", primeText:"Elige un límite para generar números primos.", primeBtn:"Calcular",
+    decompTitle:"Descomposición multiplicativa", decompText:"Introduce un número para ver todas las descomposiciones.", decompBtn:"Calcular",
+    mathTitle:"Funciones Matemáticas", mathText:"Introduce números para realizar cálculos.",
+    mathOps:{gcd:"MCD", lcm:"mcm", pow:"Potencia", mod:"Módulo", add:"Suma", sub:"Resta", sin:"Sen (grados)", cos:"Cos (grados)", tan:"Tan (grados)", factorial:"Factorial", combination:"Combinación (nCr)", permutation:"Permutación (nPr)"},
+    invalidLimit:"Límite inválido.", invalidNum:"Número inválido.", noDecomp:"Número primo — no hay descomposición posible.", count:"Número de factorizaciones posibles:", darkOn:"Oscuro ON", darkOff:"Oscuro OFF"
+  }
 };
 
 let currentLang = localStorage.getItem('lang') || 'en';
@@ -150,25 +184,36 @@ function applyTranslations(){
   document.getElementById('title').textContent=t.title;
   document.getElementById('navPrime').textContent=t.navPrime;
   document.getElementById('navDecomp').textContent=t.navDecomp;
+  document.getElementById('navMath').textContent=t.navMath;
   document.getElementById('primeTitle').textContent=t.primeTitle;
   document.getElementById('primeText').textContent=t.primeText;
   document.getElementById('primeBtn').textContent=t.primeBtn;
   document.getElementById('decompTitle').textContent=t.decompTitle;
   document.getElementById('decompText').textContent=t.decompText;
   document.getElementById('decompBtn').textContent=t.decompBtn;
+  document.getElementById('mathTitle').textContent=t.mathTitle;
+  document.getElementById('mathText').textContent=t.mathText;
+
+  // Update math operations dropdown
+  const mathSelect = document.getElementById('mathOperation');
+  mathSelect.innerHTML = Object.entries(t.mathOps).map(([value,label])=>`<option value="${value}">${label}</option>`).join('');
+
   document.getElementById('darkBtn').textContent=isDark?t.darkOn:t.darkOff;
 }
 applyTranslations();
+
 langSelect.addEventListener('change', (e)=>{
   currentLang=e.target.value;
   localStorage.setItem('lang',currentLang);
   applyTranslations();
 });
+
 function toggleDarkMode(){
   isDark=document.body.classList.toggle('dark');
   localStorage.setItem('dark',isDark?'1':'0');
   applyTranslations();
 }
+
 function show(id){
   document.querySelectorAll('section').forEach(s=>s.style.display='none');
   document.getElementById(id).style.display='block';
@@ -184,6 +229,7 @@ function generatePrimes(){
   const primes=[];for(let i=2;i<=limit;i++)if(isPrime(i))primes.push(i);
   out.textContent=primes.join(', ');
 }
+
 function factorCombinations(n){
   const results=[];
   function helper(curr,start,target){
@@ -201,6 +247,42 @@ function calcDecomp(){
   const combs=factorCombinations(n);
   if(!combs.length){out.textContent=t.noDecomp;return;}
   out.innerHTML=`<div class="small">${t.count} ${combs.length}</div><div style="margin-top:8px;">${combs.map(c=>c.join(' × ')).join('<br>')}</div>`;
+}
+
+function calcMath() {
+  const a = Number(document.getElementById('mathInput1').value);
+  const b = Number(document.getElementById('mathInput2').value);
+  const op = document.getElementById('mathOperation').value;
+  const out = document.getElementById('mathOutput');
+  const t = translations[currentLang];
+
+  if (!Number.isFinite(a) || (!Number.isFinite(b) && ['gcd','lcm','pow','mod','add','sub','combination','permutation'].includes(op))) {
+    out.textContent = t.invalidNum; return;
+  }
+
+  function gcd(x,y){return y?gcd(y,x%y):x;}
+  function lcm(x,y){return Math.abs(x*y)/gcd(x,y);}
+  function factorial(n){if(n<0 || !Number.isInteger(n)) return NaN; let f=1; for(let i=2;i<=n;i++) f*=i; return f;}
+  function nCr(n,r){return factorial(n)/(factorial(r)*factorial(n-r));}
+  function nPr(n,r){return factorial(n)/factorial(n-r);}
+
+  let result;
+  switch(op){
+    case 'gcd': result=gcd(a,b); break;
+    case 'lcm': result=lcm(a,b); break;
+    case 'pow': result=Math.pow(a,b); break;
+    case 'mod': result=a%b; break;
+    case 'add': result=a+b; break;
+    case 'sub': result=a-b; break;
+    case 'sin': result=Math.sin(a*Math.PI/180); break;
+    case 'cos': result=Math.cos(a*Math.PI/180); break;
+    case 'tan': result=Math.tan(a*Math.PI/180); break;
+    case 'factorial': result=factorial(a); break;
+    case 'combination': result=nCr(a,b); break;
+    case 'permutation': result=nPr(a,b); break;
+    default: result="Unknown operation";
+  }
+  out.textContent=result;
 }
 </script>
 </body>
