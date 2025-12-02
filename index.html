@@ -68,7 +68,7 @@
       <p id="primeText" class="small">Choose a limit to generate prime numbers less than or equal to that limit.</p>
       <div class="row">
         <input id="primeLimit" type="number" min="2" value="100">
-        <button class="primary" onclick="generatePrimes()">Calculate</button>
+        <button class="primary" onclick="generatePrimes()" id="primeBtn">Calculate</button>
       </div>
       <div class="output" id="primeOutput"></div>
     </div>
@@ -81,7 +81,7 @@
       <p id="decompText" class="small">Enter a number to list all factorizations.</p>
       <div class="row">
         <input id="decompNum" type="number" min="2" value="60">
-        <button class="primary" onclick="calcDecomp()">Calculate</button>
+        <button class="primary" onclick="calcDecomp()" id="decompBtn">Calculate</button>
       </div>
       <div class="output" id="decompOutput"></div>
     </div>
@@ -96,7 +96,7 @@
         <input id="mathInput1" type="number" placeholder="Number 1">
         <input id="mathInput2" type="number" placeholder="Number 2">
         <select id="mathOperation"></select>
-        <button class="primary" onclick="calcMath()">Calculate</button>
+        <button class="primary" onclick="calcMath()" id="mathBtn">Calculate</button>
       </div>
       <div class="output" id="mathOutput"></div>
     </div>
@@ -111,7 +111,7 @@
         <input id="quadA" type="number" placeholder="a">
         <input id="quadB" type="number" placeholder="b">
         <input id="quadC" type="number" placeholder="c">
-        <button class="primary" onclick="solveQuadratic()">Calculate</button>
+        <button class="primary" onclick="solveQuadratic()" id="quadBtn">Calculate</button>
       </div>
       <div class="output" id="quadOutput"></div>
     </div>
@@ -120,8 +120,8 @@
   <!-- Fraction Calculator -->
   <section id="fraction">
     <div class="box">
-      <h3>Fraction Calculator</h3>
-      <p class="small">Addition, subtraction, multiplication, division, and automatic simplification.</p>
+      <h3 id="fracTitle">Fraction Calculator</h3>
+      <p id="fracText" class="small">Addition, subtraction, multiplication, division, and automatic simplification.</p>
       <div class="row">
         <div class="fraction-box">
           <input id="num1" type="number" placeholder="numerator">
@@ -139,7 +139,7 @@
           <div class="fraction-bar"></div>
           <input id="den2" type="number" placeholder="denominator">
         </div>
-        <button class="primary" onclick="calcFraction()">Calculate</button>
+        <button class="primary" onclick="calcFraction()" id="fracBtn">Calculate</button>
       </div>
       <div id="fractionError" class="small" style="color:#f87171;"></div>
       <div class="output" id="fractionResult" style="display:none;"></div>
@@ -151,11 +151,150 @@
 
 <script>
 const translations = {
-  en:{title:"Digital Tools", navPrime:"Prime Numbers", navDecomp:"Factorization", navMath:"Math Functions", navQuad:"Quadratic Solver"},
-  fr:{title:"Outils numériques", navPrime:"Nombres premiers", navDecomp:"Décomposition", navMath:"Fonctions Mathématiques", navQuad:"Solveur Quadratique"},
-  it:{title:"Strumenti digitali", navPrime:"Numeri primi", navDecomp:"Scomposizione", navMath:"Funzioni Matematiche", navQuad:"Risolutore Quadratico"},
-  de:{title:"Digitale Werkzeuge", navPrime:"Primzahlen", navDecomp:"Faktorisierung", navMath:"Mathematische Funktionen", navQuad:"Quadratischer Löser"},
-  es:{title:"Herramientas digitales", navPrime:"Números primos", navDecomp:"Factorización", navMath:"Funciones Matemáticas", navQuad:"Solver Cuadrático"}
+  en:{
+    title:"Digital Tools",
+    navPrime:"Prime Numbers",
+    navDecomp:"Factorization",
+    navMath:"Math Functions",
+    navQuad:"Quadratic Solver",
+    navFrac:"Fractions",
+
+    primeTitle:"Prime Numbers",
+    primeText:"Choose a limit to generate prime numbers less than or equal to that limit.",
+    primeBtn:"Calculate",
+
+    decompTitle:"Multiplicative Decomposition",
+    decompText:"Enter a number to list all factorizations.",
+    decompBtn:"Calculate",
+
+    mathTitle:"Math Functions",
+    mathText:"Enter numbers to calculate various math operations.",
+    mathBtn:"Calculate",
+
+    quadTitle:"Quadratic Solver",
+    quadText:"Enter coefficients a, b, and c to solve ax² + bx + c = 0.",
+    quadBtn:"Calculate",
+
+    fracTitle:"Fraction Calculator",
+    fracText:"Addition, subtraction, multiplication, division, and automatic simplification.",
+    fracBtn:"Calculate"
+  },
+
+  fr:{
+    title:"Outils numériques",
+    navPrime:"Nombres premiers",
+    navDecomp:"Décomposition",
+    navMath:"Fonctions mathématiques",
+    navQuad:"Solveur quadratique",
+    navFrac:"Fractions",
+
+    primeTitle:"Nombres premiers",
+    primeText:"Choisissez une limite pour générer les nombres premiers inférieurs ou égaux à cette limite.",
+    primeBtn:"Calculer",
+
+    decompTitle:"Décomposition multiplicative",
+    decompText:"Entrez un nombre pour lister toutes ses factorisations.",
+    decompBtn:"Calculer",
+
+    mathTitle:"Fonctions mathématiques",
+    mathText:"Entrez des nombres pour effectuer diverses opérations mathématiques.",
+    mathBtn:"Calculer",
+
+    quadTitle:"Solveur quadratique",
+    quadText:"Entrez les coefficients a, b et c pour résoudre ax² + bx + c = 0.",
+    quadBtn:"Calculer",
+
+    fracTitle:"Calculateur de fractions",
+    fracText:"Addition, soustraction, multiplication, division et simplification automatique.",
+    fracBtn:"Calculer"
+  },
+
+  it:{
+    title:"Strumenti digitali",
+    navPrime:"Numeri primi",
+    navDecomp:"Fattorizzazione",
+    navMath:"Funzioni matematiche",
+    navQuad:"Risolutore quadratico",
+    navFrac:"Frazioni",
+
+    primeTitle:"Numeri primi",
+    primeText:"Scegli un limite per generare numeri primi minori o uguali a tale limite.",
+    primeBtn:"Calcola",
+
+    decompTitle:"Scomposizione moltiplicativa",
+    decompText:"Inserisci un numero per elencare tutte le fattorizzazioni.",
+    decompBtn:"Calcola",
+
+    mathTitle:"Funzioni matematiche",
+    mathText:"Inserisci numeri per calcolare varie operazioni matematiche.",
+    mathBtn:"Calcola",
+
+    quadTitle:"Risolutore quadratico",
+    quadText:"Inserisci i coefficienti a, b e c per risolvere ax² + bx + c = 0.",
+    quadBtn:"Calcola",
+
+    fracTitle:"Calcolatore di frazioni",
+    fracText:"Addizione, sottrazione, moltiplicazione, divisione e semplificazione automatica.",
+    fracBtn:"Calcola"
+  },
+
+  de:{
+    title:"Digitale Werkzeuge",
+    navPrime:"Primzahlen",
+    navDecomp:"Faktorisierung",
+    navMath:"Mathematische Funktionen",
+    navQuad:"Quadratischer Löser",
+    navFrac:"Brüche",
+
+    primeTitle:"Primzahlen",
+    primeText:"Wählen Sie ein Limit, um Primzahlen bis zu diesem Wert zu erzeugen.",
+    primeBtn:"Berechnen",
+
+    decompTitle:"Multiplikative Zerlegung",
+    decompText:"Geben Sie eine Zahl ein, um alle Faktorisierungen aufzulisten.",
+    decompBtn:"Berechnen",
+
+    mathTitle:"Mathematische Funktionen",
+    mathText:"Geben Sie Zahlen ein, um verschiedene mathematische Operationen durchzuführen.",
+    mathBtn:"Berechnen",
+
+    quadTitle:"Quadratischer Löser",
+    quadText:"Geben Sie die Koeffizienten a, b und c ein, um ax² + bx + c = 0 zu lösen.",
+    quadBtn:"Berechnen",
+
+    fracTitle:"Bruchrechner",
+    fracText:"Addition, Subtraktion, Multiplikation, Division und automatische Vereinfachung.",
+    fracBtn:"Berechnen"
+  },
+
+  es:{
+    title:"Herramientas digitales",
+    navPrime:"Números primos",
+    navDecomp:"Factorización",
+    navMath:"Funciones matemáticas",
+    navQuad:"Solucionador cuadrático",
+    navFrac:"Fracciones",
+
+    primeTitle:"Números primos",
+    primeText:"Elige un límite para generar números primos menores o iguales a dicho límite.",
+    primeBtn:"Calcular",
+
+    decompTitle:"Descomposición multiplicativa",
+    decompText:"Introduce un número para listar todas sus factorizaciones.",
+    decompBtn:"Calcular",
+
+    mathTitle:"Funciones matemáticas",
+    mathText:"Introduce números para calcular varias operaciones matemáticas.",
+    mathBtn:"Calcular",
+
+    quadTitle:"Solucionador cuadrático",
+    quadText:"Introduce los coeficientes a, b y c para resolver ax² + bx + c = 0.",
+    quadBtn:"Calcular",
+
+    fracTitle:"Calculadora de fracciones",
+    fracText:"Suma, resta, multiplicación, división y simplificación automática.",
+    fracBtn:"Calcular"
+  }
 };
 
 let currentLang = localStorage.getItem('lang') || 'en';
@@ -167,10 +306,32 @@ if(isDark) document.body.classList.add('dark');
 function applyTranslations(){
   const t = translations[currentLang];
   document.getElementById('title').textContent=t.title;
+
   document.getElementById('navPrime').textContent=t.navPrime;
   document.getElementById('navDecomp').textContent=t.navDecomp;
   document.getElementById('navMath').textContent=t.navMath;
   document.getElementById('navQuad').textContent=t.navQuad;
+  document.getElementById('navFrac').textContent=t.navFrac;
+
+  document.getElementById('primeTitle').textContent=t.primeTitle;
+  document.getElementById('primeText').textContent=t.primeText;
+  document.getElementById('primeBtn').textContent=t.primeBtn;
+
+  document.getElementById('decompTitle').textContent=t.decompTitle;
+  document.getElementById('decompText').textContent=t.decompText;
+  document.getElementById('decompBtn').textContent=t.decompBtn;
+
+  document.getElementById('mathTitle').textContent=t.mathTitle;
+  document.getElementById('mathText').textContent=t.mathText;
+  document.getElementById('mathBtn').textContent=t.mathBtn;
+
+  document.getElementById('quadTitle').textContent=t.quadTitle;
+  document.getElementById('quadText').textContent=t.quadText;
+  document.getElementById('quadBtn').textContent=t.quadBtn;
+
+  document.getElementById('fracTitle').textContent=t.fracTitle;
+  document.getElementById('fracText').textContent=t.fracText;
+  document.getElementById('fracBtn').textContent=t.fracBtn;
 }
 applyTranslations();
 langSelect.addEventListener('change', e=>{
